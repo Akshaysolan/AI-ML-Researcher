@@ -1,0 +1,267 @@
+﻿word,label,confidence,score,reason
+रात,correct spelling,HIGH,0.98,found in dictionary
+था,correct spelling,HIGH,0.98,found in dictionary
+अंकल,correct spelling,HIGH,0.98,found in dictionary
+प्रोजेक्ट,correct spelling,HIGH,0.98,found in dictionary
+हो,correct spelling,HIGH,0.98,found in dictionary
+लगता,correct spelling,HIGH,0.98,found in dictionary
+बदक,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -4.11"
+कि,correct spelling,HIGH,0.98,found in dictionary
+जाने,correct spelling,MEDIUM,0.8,valid stem+suffix
+मिस्टेक,correct spelling,HIGH,0.98,found in dictionary
+रहा,correct spelling,HIGH,0.98,found in dictionary
+जाते,correct spelling,HIGH,0.98,found in dictionary
+आराम,correct spelling,HIGH,0.98,found in dictionary
+रहने,correct spelling,HIGH,0.98,found in dictionary
+पे,correct spelling,HIGH,0.98,found in dictionary
+छोड़,correct spelling,HIGH,0.98,found in dictionary
+मेको,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.32"
+पता,correct spelling,HIGH,0.98,found in dictionary
+अराम,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.11"
+सुकुन,correct spelling,HIGH,0.98,found in dictionary
+साथ,correct spelling,HIGH,0.98,found in dictionary
+वह,correct spelling,HIGH,0.98,found in dictionary
+वहा,correct spelling,MEDIUM,0.8,valid stem+suffix
+दिए,correct spelling,HIGH,0.98,found in dictionary
+रह,correct spelling,HIGH,0.98,found in dictionary
+सकती,correct spelling,HIGH,0.98,found in dictionary
+सब,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -4.20"
+जंगल,correct spelling,HIGH,0.98,found in dictionary
+करो,correct spelling,HIGH,0.98,found in dictionary
+कैसे,incorrect spelling,MEDIUM,0.11166704957540083,"not in dict, no morphology, LM -2.38"
+बात,correct spelling,HIGH,0.98,found in dictionary
+का,correct spelling,HIGH,0.98,found in dictionary
+काम,correct spelling,HIGH,0.98,found in dictionary
+आती,incorrect spelling,MEDIUM,0.05344846483410215,"not in dict, no morphology, LM -2.97"
+बीत,correct spelling,HIGH,0.98,found in dictionary
+दी,correct spelling,HIGH,0.98,found in dictionary
+हां,correct spelling,HIGH,0.98,found in dictionary
+सर,correct spelling,HIGH,0.98,found in dictionary
+छोड़ने,correct spelling,MEDIUM,0.8,valid stem+suffix
+आने,correct spelling,HIGH,0.98,found in dictionary
+जंगली,correct spelling,HIGH,0.98,found in dictionary
+पटक,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -4.17"
+आवाज,correct spelling,HIGH,0.98,found in dictionary
+नीचे,correct spelling,HIGH,0.98,found in dictionary
+वाला,correct spelling,HIGH,0.98,found in dictionary
+पाई,correct spelling,HIGH,0.98,found in dictionary
+भर,correct spelling,HIGH,0.98,found in dictionary
+हमें,correct spelling,HIGH,0.98,found in dictionary
+समझ,incorrect spelling,MEDIUM,0.06272266554547545,"not in dict, no morphology, LM -2.87"
+बज,correct spelling,HIGH,0.98,found in dictionary
+जाएंगे,correct spelling,HIGH,0.98,found in dictionary
+जी,correct spelling,HIGH,0.98,found in dictionary
+को,correct spelling,HIGH,0.98,found in dictionary
+लहरा,correct spelling,HIGH,0.98,found in dictionary
+एक,correct spelling,HIGH,0.98,found in dictionary
+सुबह,correct spelling,HIGH,0.98,found in dictionary
+आपको,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.16"
+बाहर,correct spelling,HIGH,0.98,found in dictionary
+उठे,incorrect spelling,MEDIUM,0.06227692445181354,"not in dict, no morphology, LM -2.88"
+गया,correct spelling,HIGH,0.98,found in dictionary
+अमेजन,correct spelling,HIGH,0.98,found in dictionary
+हूं,correct spelling,HIGH,0.98,found in dictionary
+मतलब,correct spelling,HIGH,0.98,found in dictionary
+बाहरी,correct spelling,HIGH,0.98,found in dictionary
+रहे,correct spelling,HIGH,0.98,found in dictionary
+लैंड,correct spelling,HIGH,0.98,found in dictionary
+ने,correct spelling,HIGH,0.98,found in dictionary
+क्योंकि,correct spelling,HIGH,0.98,found in dictionary
+दिवोग,correct spelling,HIGH,0.98,found in dictionary
+लाइट,correct spelling,HIGH,0.98,found in dictionary
+लोग।,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.18"
+नातो,correct spelling,HIGH,0.98,found in dictionary
+जाती,correct spelling,HIGH,0.98,found in dictionary
+नहीं।,incorrect spelling,LOW,0.04172003838005384,"not in dict, no morphology, LM -3.08"
+सफर,correct spelling,HIGH,0.98,found in dictionary
+गिर,correct spelling,HIGH,0.98,found in dictionary
+उधर,correct spelling,HIGH,0.98,found in dictionary
+टेंट,correct spelling,HIGH,0.98,found in dictionary
+नौ,correct spelling,HIGH,0.98,found in dictionary
+खतरा,correct spelling,HIGH,0.98,found in dictionary
+बहुत,correct spelling,HIGH,0.98,found in dictionary
+छः,correct spelling,HIGH,0.98,found in dictionary
+आता,correct spelling,HIGH,0.98,found in dictionary
+हुआ,correct spelling,HIGH,0.98,found in dictionary
+उसके,correct spelling,HIGH,0.98,found in dictionary
+कोई,correct spelling,HIGH,0.98,found in dictionary
+इतना,correct spelling,HIGH,0.98,found in dictionary
+लगड़ा,correct spelling,HIGH,0.98,found in dictionary
+हम,correct spelling,HIGH,0.98,found in dictionary
+अब,correct spelling,HIGH,0.98,found in dictionary
+में,correct spelling,HIGH,0.98,found in dictionary
+हाँ,correct spelling,HIGH,0.98,found in dictionary
+पाए,correct spelling,HIGH,0.98,found in dictionary
+रोड,correct spelling,HIGH,0.98,found in dictionary
+पर,correct spelling,HIGH,0.98,found in dictionary
+उखाड़,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.32"
+जाओ,correct spelling,HIGH,0.98,found in dictionary
+जनसंख्या,correct spelling,HIGH,0.98,found in dictionary
+बोहोत,correct spelling,HIGH,0.98,found in dictionary
+चलना,correct spelling,HIGH,0.98,found in dictionary
+गया।,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.40"
+जनजाति,correct spelling,HIGH,0.98,found in dictionary
+बताए,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.82"
+आएगा,correct spelling,HIGH,0.98,found in dictionary
+कर,correct spelling,HIGH,0.98,found in dictionary
+दिया,correct spelling,HIGH,0.98,found in dictionary
+मिला,correct spelling,HIGH,0.98,found in dictionary
+हमको,incorrect spelling,MEDIUM,0.051344785586503405,"not in dict, no morphology, LM -2.99"
+हम्म,incorrect spelling,MEDIUM,0.0781790074666111,"not in dict, no morphology, LM -2.72"
+घाटी,correct spelling,HIGH,0.98,found in dictionary
+से,correct spelling,HIGH,0.98,found in dictionary
+अजीब,correct spelling,HIGH,0.98,found in dictionary
+उड़न्टा,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.58"
+ना,correct spelling,LOW,0.58,LM score -2.20 ≥ threshold
+आए,correct spelling,HIGH,0.98,found in dictionary
+बढ़ना,correct spelling,HIGH,0.98,found in dictionary
+हुर,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.41"
+बाग,correct spelling,HIGH,0.98,found in dictionary
+के,correct spelling,HIGH,0.98,found in dictionary
+सो,correct spelling,HIGH,0.98,found in dictionary
+जा,correct spelling,HIGH,0.98,found in dictionary
+ले,correct spelling,HIGH,0.98,found in dictionary
+तो,correct spelling,HIGH,0.98,found in dictionary
+ऐसा,correct spelling,HIGH,0.98,found in dictionary
+जैसे,correct spelling,HIGH,0.98,found in dictionary
+अ,incorrect spelling,MEDIUM,0.3,single character
+रहेगा,correct spelling,HIGH,0.98,found in dictionary
+बार,correct spelling,LOW,0.58,LM score -1.82 ≥ threshold
+किलोमीटर,correct spelling,HIGH,0.98,found in dictionary
+बैठे,correct spelling,HIGH,0.98,found in dictionary
+जुड़ा,correct spelling,HIGH,0.98,found in dictionary
+होनी,correct spelling,HIGH,0.98,found in dictionary
+देखिए,correct spelling,HIGH,0.98,found in dictionary
+गड़ा,correct spelling,HIGH,0.98,found in dictionary
+भूल,correct spelling,HIGH,0.98,found in dictionary
+डाल,correct spelling,HIGH,0.98,found in dictionary
+देखना,correct spelling,HIGH,0.98,found in dictionary
+घाटे,correct spelling,HIGH,0.98,found in dictionary
+वगैरा,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.23"
+पहली,correct spelling,HIGH,0.98,found in dictionary
+आग,correct spelling,HIGH,0.98,found in dictionary
+वहां,correct spelling,HIGH,0.98,found in dictionary
+शाम,correct spelling,HIGH,0.98,found in dictionary
+घूमने,correct spelling,HIGH,0.98,found in dictionary
+अपना,correct spelling,HIGH,0.98,found in dictionary
+आके,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.45"
+अकेली,correct spelling,HIGH,0.98,found in dictionary
+किये,correct spelling,HIGH,0.98,found in dictionary
+उपर,correct spelling,HIGH,0.98,found in dictionary
+गए,correct spelling,HIGH,0.98,found in dictionary
+सुना,correct spelling,HIGH,0.98,found in dictionary
+हमारे,correct spelling,LOW,0.58,LM score -2.14 ≥ threshold
+जहां,correct spelling,HIGH,0.98,found in dictionary
+आसपास,correct spelling,HIGH,0.98,found in dictionary
+हा,incorrect spelling,MEDIUM,0.0991832897905236,"not in dict, no morphology, LM -2.51"
+जब,correct spelling,HIGH,0.98,found in dictionary
+हैं,correct spelling,HIGH,0.98,found in dictionary
+आठ,correct spelling,HIGH,0.98,found in dictionary
+करके,correct spelling,HIGH,0.98,found in dictionary
+अपनी,incorrect spelling,MEDIUM,0.08227849126771969,"not in dict, no morphology, LM -2.68"
+इधर,correct spelling,HIGH,0.98,found in dictionary
+है,correct spelling,HIGH,0.98,found in dictionary
+लिए,correct spelling,HIGH,0.98,found in dictionary
+आई,correct spelling,HIGH,0.98,found in dictionary
+जैसी,incorrect spelling,MEDIUM,0.08063046069297408,"not in dict, no morphology, LM -2.69"
+थे,correct spelling,HIGH,0.98,found in dictionary
+उन,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.32"
+ये,correct spelling,HIGH,0.98,found in dictionary
+चिला,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.37"
+डर,correct spelling,HIGH,0.98,found in dictionary
+उनकी,correct spelling,HIGH,0.98,found in dictionary
+लेकिन,correct spelling,HIGH,0.98,found in dictionary
+गार्ड,correct spelling,HIGH,0.98,found in dictionary
+अगर,correct spelling,HIGH,0.98,found in dictionary
+करने,correct spelling,HIGH,0.98,found in dictionary
+भी,correct spelling,HIGH,0.98,found in dictionary
+न,correct spelling,MEDIUM,0.7,single character
+खंड,correct spelling,HIGH,0.98,found in dictionary
+क्या,correct spelling,LOW,0.58,LM score -2.11 ≥ threshold
+छै,correct spelling,HIGH,0.98,found in dictionary
+उखाड़,correct spelling,HIGH,0.98,found in dictionary
+तंबू,correct spelling,HIGH,0.98,found in dictionary
+वक्त,correct spelling,HIGH,0.98,found in dictionary
+की,correct spelling,HIGH,0.98,found in dictionary
+सात,correct spelling,HIGH,0.98,found in dictionary
+हमने,correct spelling,MEDIUM,0.8,valid stem+suffix
+मम्मी,correct spelling,HIGH,0.98,found in dictionary
+महसूस,correct spelling,HIGH,0.98,found in dictionary
+अपने,incorrect spelling,MEDIUM,0.09053791255333604,"not in dict, no morphology, LM -2.59"
+कैम्पिंग,correct spelling,HIGH,0.98,found in dictionary
+जाओगे,correct spelling,HIGH,0.98,found in dictionary
+लगा,correct spelling,HIGH,0.98,found in dictionary
+किए,correct spelling,HIGH,0.98,found in dictionary
+होता,correct spelling,HIGH,0.98,found in dictionary
+सायद,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.54"
+मजा,correct spelling,HIGH,0.98,found in dictionary
+"तो,",incorrect spelling,HIGH,0.02,non-Devanagari characters
+खांड,correct spelling,HIGH,0.98,found in dictionary
+दुबारा,correct spelling,HIGH,0.98,found in dictionary
+उठाने,correct spelling,HIGH,0.98,found in dictionary
+जायेगा,correct spelling,HIGH,0.98,found in dictionary
+कम,correct spelling,HIGH,0.98,found in dictionary
+अच्छा,correct spelling,HIGH,0.98,found in dictionary
+मुझे,correct spelling,HIGH,0.98,found in dictionary
+देना,correct spelling,HIGH,0.98,found in dictionary
+खोजने,correct spelling,HIGH,0.98,found in dictionary
+वहाँ,correct spelling,HIGH,0.98,found in dictionary
+पहले,correct spelling,HIGH,0.98,found in dictionary
+लिखना,correct spelling,HIGH,0.98,found in dictionary
+घर,correct spelling,HIGH,0.98,found in dictionary
+रहते,correct spelling,MEDIUM,0.8,valid stem+suffix
+"आया,",incorrect spelling,HIGH,0.02,non-Devanagari characters
+चाहते,correct spelling,HIGH,0.98,found in dictionary
+बारे,correct spelling,HIGH,0.98,found in dictionary
+शांति,correct spelling,HIGH,0.98,found in dictionary
+आ,incorrect spelling,MEDIUM,0.3,single character
+जन,correct spelling,HIGH,0.98,found in dictionary
+थोड़ा,correct spelling,HIGH,0.98,found in dictionary
+कुड़रमा,correct spelling,HIGH,0.98,found in dictionary
+बोल,incorrect spelling,MEDIUM,0.06700297343667533,"not in dict, no morphology, LM -2.83"
+काफी,correct spelling,HIGH,0.98,found in dictionary
+थे।,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.73"
+लेकर,incorrect spelling,MEDIUM,0.07478434532533879,"not in dict, no morphology, LM -2.75"
+उठा,incorrect spelling,MEDIUM,0.06227692445181354,"not in dict, no morphology, LM -2.88"
+तरफ,correct spelling,HIGH,0.98,found in dictionary
+टैंट,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.14"
+बजे,correct spelling,HIGH,0.98,found in dictionary
+ही,correct spelling,HIGH,0.98,found in dictionary
+वो,correct spelling,HIGH,0.98,found in dictionary
+लुढ़क,correct spelling,HIGH,0.98,found in dictionary
+उससे,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.19"
+उनको,correct spelling,HIGH,0.98,found in dictionary
+सारे,correct spelling,HIGH,0.98,found in dictionary
+एरिया,correct spelling,HIGH,0.98,found in dictionary
+करनी,correct spelling,HIGH,0.98,found in dictionary
+उठते,correct spelling,HIGH,0.98,found in dictionary
+रही,correct spelling,HIGH,0.98,found in dictionary
+कहीं,incorrect spelling,MEDIUM,0.06967105033178267,"not in dict, no morphology, LM -2.80"
+जंगन,correct spelling,HIGH,0.98,found in dictionary
+कैम्प,correct spelling,HIGH,0.98,found in dictionary
+दिन,correct spelling,HIGH,0.98,found in dictionary
+बिना,correct spelling,HIGH,0.98,found in dictionary
+हमारा,correct spelling,HIGH,0.98,found in dictionary
+वगेरा,correct spelling,HIGH,0.98,found in dictionary
+किस,incorrect spelling,MEDIUM,0.07017221132102403,"not in dict, no morphology, LM -2.80"
+और,correct spelling,HIGH,0.98,found in dictionary
+नहीं,correct spelling,HIGH,0.98,found in dictionary
+उठाएं,incorrect spelling,MEDIUM,0.05335602345272572,"not in dict, no morphology, LM -2.97"
+अनुभव,correct spelling,HIGH,0.98,found in dictionary
+ऐसे,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.18"
+होती,correct spelling,MEDIUM,0.8,valid stem+suffix
+एंटर,correct spelling,HIGH,0.98,found in dictionary
+चाहिए,correct spelling,HIGH,0.98,found in dictionary
+थी,correct spelling,HIGH,0.98,found in dictionary
+गाड़,correct spelling,HIGH,0.98,found in dictionary
+कुछ,correct spelling,HIGH,0.98,found in dictionary
+फिर,correct spelling,HIGH,0.98,found in dictionary
+जो,correct spelling,HIGH,0.98,found in dictionary
+बाद,correct spelling,HIGH,0.98,found in dictionary
+आया,incorrect spelling,LOW,0.04,"not in dict, no morphology, LM -3.29"
+भाषा,correct spelling,HIGH,0.98,found in dictionary
+सा,incorrect spelling,MEDIUM,0.11547601190822651,"not in dict, no morphology, LM -2.35"
+दस,correct spelling,HIGH,0.98,found in dictionary
+लोग,correct spelling,HIGH,0.98,found in dictionary
+सारा,correct spelling,LOW,0.58,LM score -1.98 ≥ threshold
+बारी,correct spelling,HIGH,0.98,found in dictionary

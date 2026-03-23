@@ -1,0 +1,29 @@
+﻿word,auto_label,manual_label,match,reason
+गया।,incorrect,incorrect,True,"not in dict, no morphology, LM -3.40"
+ऐसे,incorrect,correct,False,"not in dict, no morphology, LM -3.18"
+उखाड़,incorrect,correct,False,"not in dict, no morphology, LM -3.32"
+सायद,incorrect,correct,False,"not in dict, no morphology, LM -3.54"
+बदक,incorrect,incorrect,True,"not in dict, no morphology, LM -4.11"
+ना,correct,correct,True,LM score -2.20 ≥ threshold
+हमारे,correct,correct,True,LM score -2.14 ≥ threshold
+थे।,incorrect,correct,False,"not in dict, no morphology, LM -3.73"
+उड़न्टा,incorrect,incorrect,True,"not in dict, no morphology, LM -3.58"
+हुर,incorrect,correct,False,"not in dict, no morphology, LM -3.41"
+वगैरा,incorrect,correct,False,"not in dict, no morphology, LM -3.23"
+मेको,incorrect,incorrect,True,"not in dict, no morphology, LM -3.32"
+पटक,incorrect,correct,False,"not in dict, no morphology, LM -4.17"
+आपको,incorrect,correct,False,"not in dict, no morphology, LM -3.16"
+अराम,incorrect,incorrect,True,"not in dict, no morphology, LM -3.11"
+आके,incorrect,incorrect,True,"not in dict, no morphology, LM -3.45"
+टैंट,incorrect,correct,False,"not in dict, no morphology, LM -3.14"
+सब,incorrect,incorrect,True,"not in dict, no morphology, LM -4.20"
+आया,incorrect,incorrect,True,"not in dict, no morphology, LM -3.29"
+उससे,incorrect,correct,False,"not in dict, no morphology, LM -3.19"
+उन,incorrect,incorrect,True,"not in dict, no morphology, LM -3.32"
+सारा,correct,correct,True,LM score -1.98 ≥ threshold
+क्या,correct,correct,True,LM score -2.11 ≥ threshold
+नहीं।,incorrect,correct,False,"not in dict, no morphology, LM -3.08"
+बताए,incorrect,incorrect,True,"not in dict, no morphology, LM -3.82"
+बार,correct,correct,True,LM score -1.82 ≥ threshold
+चिला,incorrect,correct,False,"not in dict, no morphology, LM -3.37"
+लोग।,incorrect,correct,False,"not in dict, no morphology, LM -3.18"
