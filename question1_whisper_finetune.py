@@ -50,29 +50,24 @@ from jiwer import wer as jiwer_wer
 warnings.filterwarnings("ignore")
 random.seed(42); np.random.seed(42); torch.manual_seed(42)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CONSTANTS
-# ─────────────────────────────────────────────────────────────────────────────
+
 GCS_BASE    = "https://storage.googleapis.com/upload_goai"
 MODEL_ID    = "openai/whisper-small"
 LANGUAGE    = "hi"
 TASK        = "transcribe"
 OUTPUT_DIR  = "./whisper-small-hindi-ft"
 SAMPLE_RATE = 16_000
-MAX_DUR     = 30.0    # Whisper context window
+MAX_DUR     = 30.0    
 MIN_DUR     = 0.5
 wer_metric  = evaluate.load("wer")
 
-# Known example: user_id=967179, recording_id=825780
 EXAMPLE_USER_ID      = "967179"
 EXAMPLE_RECORDING_ID = "825780"
 EXAMPLE_TRANS_URL    = f"{GCS_BASE}/{EXAMPLE_USER_ID}/{EXAMPLE_RECORDING_ID}_transcription.json"
 EXAMPLE_AUDIO_URL    = f"{GCS_BASE}/{EXAMPLE_USER_ID}/{EXAMPLE_RECORDING_ID}.wav"
 EXAMPLE_META_URL     = f"{GCS_BASE}/{EXAMPLE_USER_ID}/{EXAMPLE_RECORDING_ID}_metadata.json"
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 1. URL BUILDER  (matches real GCS pattern)
-# ─────────────────────────────────────────────────────────────────────────────
+
 def build_urls(user_id: str, recording_id: str) -> Dict[str, str]:
     """
     Constructs the three GCS URLs for a given user_id / recording_id.
@@ -90,9 +85,7 @@ def build_urls(user_id: str, recording_id: str) -> Dict[str, str]:
         "metadata":       f"{base}_metadata.json",
     }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 2. FETCH HELPERS
-# ─────────────────────────────────────────────────────────────────────────────
+
 def fetch_json(url: str, retries: int = 3) -> Optional[list]:
     """
     Download and parse a JSON file from GCS.
@@ -131,9 +124,7 @@ def download_audio(url: str, dest_dir: str) -> Optional[str]:
         return None
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 3. TRANSCRIPT EXTRACTION FROM REAL JSON
-# ─────────────────────────────────────────────────────────────────────────────
+
 def extract_segments(json_data: list) -> List[Dict]:
     """
     Parse real GCS transcription JSON into segment list.
@@ -174,9 +165,7 @@ def full_transcript(json_data: list) -> str:
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. PREPROCESSING
-# ─────────────────────────────────────────────────────────────────────────────
+
 PREPROCESSING_STEPS = """
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Q1-a  PREPROCESSING STEPS
@@ -241,9 +230,7 @@ def preprocess_full_audio(path: str) -> Optional[np.ndarray]:
         print(f"  [WARN] audio load failed: {e}"); return None
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 5. LOAD METADATA FROM GOOGLE SHEET (CSV export)
-# ─────────────────────────────────────────────────────────────────────────────
+
 def load_metadata_sheet(sheet_url_or_csv: str) -> pd.DataFrame:
     """
     Load metadata from either:
@@ -258,7 +245,7 @@ def load_metadata_sheet(sheet_url_or_csv: str) -> pd.DataFrame:
       File → Download → CSV  (or share with 'Anyone with link' and use export URL)
     """
     if sheet_url_or_csv.startswith("http"):
-        # Convert Google Sheets URL to CSV export URL
+       
         if "spreadsheets/d/" in sheet_url_or_csv:
             sheet_id = sheet_url_or_csv.split("/d/")[1].split("/")[0]
             gid = ""
@@ -286,9 +273,7 @@ def load_metadata_sheet(sheet_url_or_csv: str) -> pd.DataFrame:
         return df
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 6. BUILD HF DATASET FROM GCS
-# ─────────────────────────────────────────────────────────────────────────────
+
 def build_dataset_from_gcs(metadata_df: pd.DataFrame,
                             tmp_dir: str,
                             max_recordings: Optional[int] = None) -> Dataset:
@@ -302,7 +287,7 @@ def build_dataset_from_gcs(metadata_df: pd.DataFrame,
     Returns a HuggingFace Dataset.
     """
     df = metadata_df.copy()
-    # Normalise column names
+    
     df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
     df = df[df.get("language", pd.Series(["hi"]*len(df))) == "hi"]
     if max_recordings:
@@ -315,11 +300,11 @@ def build_dataset_from_gcs(metadata_df: pd.DataFrame,
 
         urls = build_urls(uid, rid)
 
-        # Use transcription_url from sheet if available, else build it
+
         trans_url = str(row.get("transcription_url", urls["transcription"]))
         audio_url = str(row.get("rec_url_gcp",       urls["audio"]))
 
-        # Fetch transcription JSON
+
         json_data = fetch_json(trans_url)
         if json_data is None:
             continue
@@ -328,7 +313,7 @@ def build_dataset_from_gcs(metadata_df: pd.DataFrame,
         if not segments:
             continue
 
-        # Download audio
+
         audio_path = download_audio(audio_url, tmp_dir)
         if audio_path is None:
             continue
@@ -337,7 +322,6 @@ def build_dataset_from_gcs(metadata_df: pd.DataFrame,
         if full_wav is None:
             continue
 
-        # Create one sample per segment
         for seg in segments:
             seg_wav = preprocess_audio_segment(
                 full_wav, seg["start"], seg["end"])
@@ -358,9 +342,6 @@ def build_dataset_from_gcs(metadata_df: pd.DataFrame,
     return Dataset.from_list(records)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 7. VERIFY REAL DATA (fetch example and print)
-# ─────────────────────────────────────────────────────────────────────────────
 def verify_real_data():
     """
     Fetch the known example URL and display first 3 segments.
@@ -383,9 +364,8 @@ def verify_real_data():
     print(f"  {full[:200]}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 8. PROCESSOR + FEATURE EXTRACTION
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 def get_processor():
     fe  = WhisperFeatureExtractor.from_pretrained(MODEL_ID)
     tok = WhisperTokenizer.from_pretrained(MODEL_ID, language=LANGUAGE, task=TASK)
@@ -401,9 +381,7 @@ def prepare_batch(batch, processor):
     return batch
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 9. DATA COLLATOR
-# ─────────────────────────────────────────────────────────────────────────────
+
 @dataclass
 class DataCollator:
     processor: WhisperProcessor
@@ -423,9 +401,7 @@ class DataCollator:
         return inp
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 10. FINE-TUNING
-# ─────────────────────────────────────────────────────────────────────────────
+
 def compute_metrics(pred, processor):
     pred_ids  = pred.predictions
     label_ids = pred.label_ids
@@ -480,9 +456,7 @@ def finetune(train_ds, eval_ds, processor):
     print(f"✓ Saved → {OUTPUT_DIR}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 11. INFERENCE
-# ─────────────────────────────────────────────────────────────────────────────
+
 def transcribe_dataset(model_or_path, processor, dataset, batch_size=16):
     if isinstance(model_or_path, str):
         model = WhisperForConditionalGeneration.from_pretrained(model_or_path)
@@ -503,9 +477,7 @@ def transcribe_dataset(model_or_path, processor, dataset, batch_size=16):
     return preds
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 12. FLEURS EVALUATION
-# ─────────────────────────────────────────────────────────────────────────────
+
 def evaluate_on_fleurs(processor, ft_path=OUTPUT_DIR):
     print("\n📥 Loading FLEURS Hindi test set...")
     fleurs = load_dataset("google/fleurs", "hi_in", split="test",
@@ -539,9 +511,7 @@ def evaluate_on_fleurs(processor, ft_path=OUTPUT_DIR):
     return table, bl_preds, ft_preds, refs, fleurs
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 13. ERROR SAMPLING
-# ─────────────────────────────────────────────────────────────────────────────
+
 def per_utt_wer(preds, refs):
     return [min(jiwer_wer(r, p) if r else 1.0, 1.0)
             for p, r in zip(preds, refs)]
@@ -585,56 +555,55 @@ def sample_errors(preds, refs, n=30) -> pd.DataFrame:
     return sampled
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 14. ERROR TAXONOMY
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 TAXONOMY = """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  ERROR TAXONOMY  (Q1-e) — derived from real GCS data segments              ║
-║  Recording 825780 / user 967179 used as primary analysis source            ║
+║  ERROR TAXONOMY  (Q1-e) — derived from real GCS data segments                ║
+║  Recording 825780 / user 967179 used as primary analysis source              ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ CAT-1  Matra / Vowel Diacritic Errors             ← most frequent         ║
-║ Cause: BPE tokeniser conflates similar matras; both forms in pre-training  ║
-║                                                                            ║
-║  Ex-1 REF: एरिया में उसके बारे में देखना           (real data segment)    ║
-║        HYP: एरिया में उसके बारे में देखन            (ा matra dropped)    ║
-║  Ex-2 REF: जनसंख्या बहुत कम दी जा रही है           (real segment)        ║
-║        HYP: जनसंख्या बहुत कम दी जा रहि है           (ई→ि substitution)   ║
-║  Ex-3 REF: अनुभव करके कुछ लिखना था                  (real segment)        ║
-║        HYP: अनुभव करके कुछ लिखना था               (correct — low matra)  ║
-║  Ex-4 REF: हूँ मैं यहाँ      HYP: हूं मैं यहाँ    (chandrabindu→anusvara)║
-║  Ex-5 REF: बहुत सुंदर        HYP: बहुत सुन्दर      (anusvara↔न् variant) ║
+║ CAT-1  Matra / Vowel Diacritic Errors             ← most frequent            ║
+║ Cause: BPE tokeniser conflates similar matras; both forms in pre-training    ║
+║                                                                              ║
+║  Ex-1 REF: एरिया में उसके बारे में देखना           (real data segment)              ║
+║        HYP: एरिया में उसके बारे में देखन            (ा matra dropped)              ║
+║  Ex-2 REF: जनसंख्या बहुत कम दी जा रही है           (real segment)               ║
+║        HYP: जनसंख्या बहुत कम दी जा रहि है           (ई→ि substitution)          ║
+║  Ex-3 REF: अनुभव करके कुछ लिखना था                  (real segment)            ║
+║        HYP: अनुभव करके कुछ लिखना था               (correct — low matra)       ║
+║  Ex-4 REF: हूँ मैं यहाँ      HYP: हूं मैं यहाँ    (chandrabindu→anusvara)              ║
+║  Ex-5 REF: बहुत सुंदर        HYP: बहुत सुन्दर      (anusvara↔न् variant)           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ CAT-2  Spoken Filler / Backchannel Errors                                 ║
-║ Cause: Real conversational data has हाँ, हूं, हम्म, जी fillers;           ║
-║        model hallucinates or drops them.                                   ║
-║                                                                            ║
-║  Ex-1 REF: हाँ बोहोत         HYP: हाँ बहुत         (dialectal बोहोत)    ║
-║  Ex-2 REF: हूं                HYP: (empty)           (filler deleted)     ║
-║  Ex-3 REF: जी                 HYP: जी हाँ            (spurious insertion) ║
+║ CAT-2  Spoken Filler / Backchannel Errors                                    ║
+║ Cause: Real conversational data has हाँ, हूं, हम्म, जी fillers;                   ║   
+║        model hallucinates or drops them.                                     ║
+║                                                                              ║
+║  Ex-1 REF: हाँ बोहोत         HYP: हाँ बहुत         (dialectal बोहोत)              ║
+║  Ex-2 REF: हूं                HYP: (empty)           (filler deleted)          ║
+║  Ex-3 REF: जी                 HYP: जी हाँ            (spurious insertion)      ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ CAT-3  Code-Mix / English Loan-Word Script Mismatch                       ║
-║ Cause: Words like एरिया, टेंट, कैम्प, प्रोजेक्ट alternate Roman/Devanagari ║
-║                                                                            ║
-║  Ex-1 REF: एरिया              HYP: area               (Roman output)      ║
-║  Ex-2 REF: टेंट               HYP: tent               (Roman output)      ║
-║  Ex-3 REF: कैम्प               HYP: camp               (Roman output)      ║
-║  Ex-4 REF: प्रोजेक्ट           HYP: project            (Roman output)      ║
+║ CAT-3  Code-Mix / English Loan-Word Script Mismatch                          ║
+║ Cause: Words like एरिया, टेंट, कैम्प, प्रोजेक्ट alternate Roman/Devanagari            ║
+║                                                                              ║
+║  Ex-1 REF: एरिया              HYP: area               (Roman output)          ║ 
+║  Ex-2 REF: टेंट               HYP: tent               (Roman output)           ║
+║  Ex-3 REF: कैम्प               HYP: camp               (Roman output)          ║
+║  Ex-4 REF: प्रोजेक्ट           HYP: project            (Roman output)            ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ CAT-4  Function Word Deletion / Insertion                                 ║
-║ Cause: Short particles (तो, ना, है, और) common in real Hindi conversation  ║
-║        are dropped in noise or hallucinated.                               ║
-║                                                                            ║
-║  Ex-1 REF: वो तो देखना था    HYP: वो देखना था       (तो deleted)         ║
-║  Ex-2 REF: हमें उनको देखना था HYP: हमें देखना था    (उनको deleted)        ║
-║  Ex-3 REF: लेकिन कुछ आया नहीं HYP: लेकिन आया नहीं  (कुछ deleted)        ║
+║ CAT-4  Function Word Deletion / Insertion                                    ║  
+║ Cause: Short particles (तो, ना, है, और) common in real Hindi conversation     ║
+║        are dropped in noise or hallucinated.                                 ║
+║                                                                              ║
+║  Ex-1 REF: वो तो देखना था    HYP: वो देखना था       (तो deleted)                 ║
+║  Ex-2 REF: हमें उनको देखना था HYP: हमें देखना था    (उनको deleted)                ║ 
+║  Ex-3 REF: लेकिन कुछ आया नहीं HYP: लेकिन आया नहीं  (कुछ deleted)                ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ CAT-5  Proper Noun / Named Entity Errors                                  ║
-║ Cause: Place names in real data (कुड़रमा, खांड, दिवोग) OOV in Whisper.    ║
-║                                                                            ║
-║  Ex-1 REF: कुड़रमा घाटी       HYP: कुड़मा घाटी       (syllable dropped)   ║
-║  Ex-2 REF: खांड जनजाति        HYP: खांड जनजाती       (ि→ी mismatch)       ║
-║  Ex-3 REF: अमेजन              HYP: Amazon             (script switch)      ║
+║ CAT-5  Proper Noun / Named Entity Errors                                     ║
+║ Cause: Place names in real data (कुड़रमा, खांड, दिवोग) OOV in Whisper.          ║
+║                                                                              ║
+║  Ex-1 REF: कुड़रमा घाटी       HYP: कुड़मा घाटी       (syllable dropped)           ║
+║  Ex-2 REF: खांड जनजाति        HYP: खांड जनजाती       (ि→ी mismatch)            ║
+║  Ex-3 REF: अमेजन              HYP: Amazon             (script switch)        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """
 
@@ -657,9 +626,8 @@ FIX-3  CAT-4: Function Word Augmentation
             high density of these particles.
 """
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 15. FIX IMPLEMENTATION: Anusvara normalisation
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 NASAL_RULES = [
     (re.compile(r"न्([कखगघङ])"), r"ं\1"),
     (re.compile(r"न्([चछजझञ])"), r"ं\1"),
@@ -693,9 +661,8 @@ def apply_fix(preds, refs, fix_fn, fix_name):
     return wer_before, wer_after
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 16. MAIN
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 def main(metadata_source=None, skip_training=False):
     """
     metadata_source: Google Sheet URL or local CSV path.
@@ -703,7 +670,6 @@ def main(metadata_source=None, skip_training=False):
     """
     print(PREPROCESSING_STEPS)
 
-    # Always verify the real GCS data first
     verify_real_data()
 
     processor = get_processor()

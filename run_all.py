@@ -1,6 +1,6 @@
 """
 run_all.py — Unified Runner for All 4 Questions
-================================================
+
 Real data URLs used throughout:
   Transcription : https://storage.googleapis.com/upload_goai/967179/825780_transcription.json
   Audio         : https://storage.googleapis.com/upload_goai/967179/825780.wav
@@ -37,14 +37,14 @@ import sys, argparse
 
 MENU = """
 ╔══════════════════════════════════════════════════════════════════╗
-║      Josh Talks ASR Assignment — Question Runner                ║
+║      Josh Talks ASR Assignment — Question Runner                 ║
 ╠══════════════════════════════════════════════════════════════════╣
-║  1name  →  Q1: Whisper Fine-Tuning + WER + Error Taxonomy      ║
-║  2name  →  Q2: Number Normalisation + English Word Tagging      ║
-║  3name  →  Q3: Hindi Spell Checker (1.75 lakh words)            ║
-║  4name  →  Q4: Lattice-Based WER Evaluation                     ║
-║  234    →  Q2 + Q3 + Q4 combined (no GPU required)             ║
-║  all    →  All 4 questions                                      ║
+║  1name  →  Q1: Whisper Fine-Tuning + WER + Error Taxonomy        ║
+║  2name  →  Q2: Number Normalisation + English Word Tagging       ║
+║  3name  →  Q3: Hindi Spell Checker (1.75 lakh words)             ║
+║  4name  →  Q4: Lattice-Based WER Evaluation                      ║
+║  234    →  Q2 + Q3 + Q4 combined (no GPU required)               ║
+║  all    →  All 4 questions                                       ║
 ╚══════════════════════════════════════════════════════════════════╝
 
 Real data:  https://storage.googleapis.com/upload_goai/967179/825780_transcription.json
@@ -67,33 +67,33 @@ def interactive_menu() -> str:
 
 
 def run_q1(args):
-    print("\n" + "▓"*65)
-    print("▓  1name: Q1 — Whisper-small Fine-Tuning Pipeline")
-    print("▓"*65)
+    print("\n" + ""*65)
+    print("1name: Q1 — Whisper-small Fine-Tuning Pipeline")
+    print(""*65)
     from question1_whisper_finetune import main as q1
     q1(metadata_source=args.metadata, skip_training=args.skip_training)
 
 
 def run_q2(_args):
-    print("\n" + "▓"*65)
-    print("▓  2name: Q2 — ASR Cleanup (Number Norm + English Tagging)")
-    print("▓"*65)
+    print("\n" + ""*65)
+    print(" 2name: Q2 — ASR Cleanup (Number Norm + English Tagging)")
+    print(""*65)
     from question2_cleanup_pipeline import main as q2
     q2()
 
 
 def run_q3(args):
-    print("\n" + "▓"*65)
-    print("▓  3name: Q3 — Hindi Spell Checker")
-    print("▓"*65)
+    print("\n" + ""*65)
+    print("3name: Q3 — Hindi Spell Checker")
+    print(""*65)
     from question3_spell_checker import main as q3
     q3(word_source=args.word_list, dict_path=args.dict)
 
 
 def run_q4(args):
-    print("\n" + "▓"*65)
-    print("▓  4name: Q4 — Lattice-Based WER")
-    print("▓"*65)
+    print("\n" + ""*65)
+    print("  4name: Q4 — Lattice-Based WER")
+    print(""*65)
     from question4_lattice_wer import main as q4
     q4(examples=None, threshold=args.threshold)
 

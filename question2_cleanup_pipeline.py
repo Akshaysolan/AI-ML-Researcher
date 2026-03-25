@@ -26,9 +26,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
-# ─────────────────────────────────────────────────────────────────────────────
-# REAL DATA CONFIG
-# ─────────────────────────────────────────────────────────────────────────────
+
 GCS_BASE             = "https://storage.googleapis.com/upload_goai"
 EXAMPLE_USER_ID      = "967179"
 EXAMPLE_RECORDING_ID = "825780"
@@ -54,9 +52,6 @@ def get_real_texts(url: str) -> List[str]:
     return [seg["text"] for seg in data if seg.get("text", "").strip()]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# A. NUMBER NORMALISATION
-# ─────────────────────────────────────────────────────────────────────────────
 
 UNIT_MAP: Dict[str, int] = {
     "शून्य": 0, "एक": 1, "दो": 2, "तीन": 3, "चार": 4,
@@ -94,7 +89,6 @@ SCALE_MAP: Dict[str, int] = {
 }
 ALL_NUM: Dict[str, int] = {**UNIT_MAP, **TENS_MAP, **SCALE_MAP}
 
-# Words after which "दो" = VERB (give), NOT numeral 2
 CURRENCY_WORDS: Set[str] = {
     "रुपये","रुपए","रूपये","रूपए","रुपया","पैसे","पैसा",
     "डॉलर","यूरो","पौंड",
@@ -134,16 +128,16 @@ def _is_verb_do(tokens: List[str], idx: int) -> bool:
     prev = tokens[idx-1] if idx > 0 else ""
     nxt  = tokens[idx+1] if idx+1 < len(tokens) else ""
 
-    # R3 highest priority: followed by scale → numeral
+   
     if nxt in SCALE_MAP:
         return False
-    # R4: preceded by scale → numeral
+ 
     if prev in SCALE_MAP:
         return False
-    # R1: currency/pronoun precedes
+ 
     if prev in VERB_DO_BEFORE:
         return True
-    # R2: sentence-final, no numeral context before
+ 
     stripped = nxt.strip("।?!.,")
     if (stripped == "" or idx == len(tokens)-1) and prev not in ALL_NUM:
         return True
@@ -187,7 +181,7 @@ def normalise_numbers(text: str) -> str:
         if tok == "दो" and _is_verb_do(words, i):
             i += 1; continue
 
-        # Greedy expansion
+   
         num_toks = [tok]
         j = i + 1
         while j < len(triples):
@@ -213,31 +207,28 @@ def normalise_numbers(text: str) -> str:
     return "".join(parts)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# B. ENGLISH WORD DETECTION
-# ─────────────────────────────────────────────────────────────────────────────
 
-# Devanagari loan-words from REAL data (एरिया, टेंट, कैम्प appear in recording 825780)
+
 DEVANAGARI_LOANWORDS: Set[str] = {
-    # Found in real recording 825780
+   
     "एरिया","टेंट","कैम्प","प्रोजेक्ट","मिस्टेक","अमेजन",
-    # Technology
+
     "कंप्यूटर","कम्प्यूटर","मोबाइल","इंटरनेट","वेबसाइट","ऐप",
     "सॉफ्टवेयर","हार्डवेयर","ब्राउज़र","सर्वर","डेटा","लैपटॉप",
     "टैबलेट","स्क्रीन","कीबोर्ड","चार्जर","कैमरा","वीडियो",
     "ऑडियो","स्पीकर","माइक्रोफोन",
-    # Professional
+
     "इंटरव्यू","जॉब","ऑफिस","मीटिंग","प्रोजेक्ट","टीम",
     "मैनेजर","बॉस","सैलरी","बोनस","ट्रेनिंग","प्रेजेंटेशन",
     "रिपोर्ट","डेडलाइन","टारगेट","बजट","क्लाइंट","कस्टमर",
-    # Communication
+
     "मैसेज","ईमेल","चैट","व्हाट्सएप","फेसबुक","इंस्टाग्राम",
     "ट्विटर","यूट्यूब","गूगल",
-    # Everyday
+
     "प्रॉब्लम","सॉल्यूशन","आइडिया","प्लान","टाइम","डेट",
     "पार्टी","फिल्म","मूवी","शॉपिंग","मार्केट","होटल",
     "रेस्टोरेंट","कैफे","पिज़्ज़ा","बर्गर",
-    # Education/Finance
+
     "स्कूल","कॉलेज","यूनिवर्सिटी","क्लास","टेस्ट","एग्जाम",
     "बैंक","लोन","पेमेंट","फ्लाइट","टैक्सी","बाइक","कार","ट्रेन","बस",
 }
@@ -264,9 +255,8 @@ def detect_english_words(text: str) -> Tuple[str, List[str]]:
     return " ".join(tagged), detected
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# FULL PIPELINE
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 def cleanup_pipeline(raw_asr: str) -> Dict[str, str]:
     stage1 = normalise_numbers(raw_asr)
     stage2, detected = detect_english_words(stage1)
@@ -274,11 +264,10 @@ def cleanup_pipeline(raw_asr: str) -> Dict[str, str]:
             "english_tagged": stage2, "english_words": detected}
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# DEMONSTRATIONS USING REAL DATA
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 NUMBER_EXAMPLES = [
-    # (input, expected, note)
+   
     ("मेरी उम्र पच्चीस साल है",
      "मेरी उम्र 25 साल है", None),
     ("यहाँ तीन सौ चौवन लोग थे",
@@ -293,7 +282,7 @@ NUMBER_EXAMPLES = [
     ("छः सात आठ किलोमीटर में नौ बजे है",
      "6 7 8 किलोमीटर में 9 बजे है",
      "From real data segment: time/distance context → convert."),
-    # Edge cases
+
     ("दो-चार बातें कर लो",
      "दो-चार बातें कर लो",
      "Idiom: दो-चार = a few → must NOT convert."),
@@ -334,18 +323,18 @@ def run_english_demo():
     print("PART B — ENGLISH WORD DETECTION")
     print("="*65)
     examples = [
-        # From real recording 825780 data
+        
         "जो एरिया में उधर की एरिया में उसके बारे में देखना",
         "हम वहां गया थे कुड़रमा घाटी तरफ पर दिवोग काफी जंगली एरिया है",
         "टेंट गड़ा और रहा तो जब पता जैसी रात हुआ",
         "आसपास की एरिया मतलब कुछ एरिया में थोड़ा पता है आग लहरा देना चाहिए",
         "हमने मिस्टेक किए कि हम लाइट नहीं ले गए थे",
         "और फिर अमेजन का जंगन होता है ना",
-        # Generic examples
+       
         "मेरा इंटरव्यू बहुत अच्छा गया और मुझे जॉब मिल गई",
         "यह problem solve नहीं हो रहा",
         "कल meeting है office में",
-        "वह बहुत अच्छा इंसान है",       # no English
+        "वह बहुत अच्छा इंसान है",       
     ]
     for s in examples:
         tagged, found = detect_english_words(s)
@@ -384,7 +373,6 @@ def run_real_data_pipeline():
         if out['english_words']:
             print(f"  EN    : {out['english_words']}")
 
-    # Save results
     df = pd.DataFrame(results)
     df.to_csv("q2_pipeline_output.csv", index=False, encoding="utf-8-sig")
     print(f"\n  ✓ Saved {len(df)} rows → q2_pipeline_output.csv")

@@ -1,6 +1,6 @@
 """
 QUESTION 4 — Lattice-Based WER Evaluation
-==========================================
+
 Uses REAL data from:
   https://storage.googleapis.com/upload_goai/967179/825780_transcription.json
 
@@ -38,9 +38,7 @@ EXAMPLE_TRANS_URL = f"{GCS_BASE}/967179/825780_transcription.json"
 AGREEMENT_THRESHOLD = 0.6
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 1. FETCH REAL DATA
-# ─────────────────────────────────────────────────────────────────────────────
+
 def fetch_json(url: str) -> Optional[list]:
     try:
         r = requests.get(url, timeout=30); r.raise_for_status(); return r.json()
@@ -59,9 +57,7 @@ def get_real_segments(url: str) -> List[Dict]:
             for s in data if s.get("text", "").strip()]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 2. WORD-LEVEL EDIT DISTANCE WITH ALIGNMENT TRACEBACK
-# ─────────────────────────────────────────────────────────────────────────────
+
 def edit_distance(ref: List[str],
                   hyp: List[str]) -> Tuple[int, List[Tuple[str,str,str]]]:
     n, m = len(ref), len(hyp)
@@ -89,9 +85,7 @@ def edit_distance(ref: List[str],
     return int(dp[n][m]), list(reversed(aln))
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 3. VALID ALTERNATIVE TABLES
-# ─────────────────────────────────────────────────────────────────────────────
+
 NUM_ALTS: Dict[str, Set[str]] = {
     "1": {"एक","1"},    "2": {"दो","2"},    "3": {"तीन","3"},
     "4": {"चार","4"},   "5": {"पाँच","पांच","5"}, "6": {"छह","छः","6"},
@@ -112,9 +106,9 @@ SPELL_ALTS: Dict[str, Set[str]] = {
     "वहाँ":    {"वहां","वहाँ"},
     "हूँ":     {"हूं","हूँ"},
     "हैं":     {"है","हैं"},
-    "बहुत":    {"बोहोत","बहुत"},      # real dialectal variant from recording 825780
-    "मुझे":    {"मेको","मुझे"},        # real dialectal variant
-    "जंगल":    {"जंगन","जंगल"},        # real data typo variant
+    "बहुत":    {"बोहोत","बहुत"},      
+    "मुझे":    {"मेको","मुझे"},       
+    "जंगल":    {"जंगन","जंगल"},       
     "एरिया":   {"area","एरिया"},
     "टेंट":    {"tent","टेंट"},
     "कैम्प":   {"camp","कैम्प"},
@@ -133,7 +127,7 @@ SYNONYMS: Dict[str, Set[str]] = {
     "पुस्तक":{"किताब","पुस्तक"},
     "घर":    {"मकान","घर"},
     "खरीदीं":{"खरीदी","खरीदीं","ख़रीदीं"},
-    "देखना": {"देखिए","देखना"},  # real data: "बिना देखिए नहीं हो सकती"
+    "देखना": {"देखिए","देखना"},  
 }
 _SYN_REV: Dict[str, Set[str]] = {}
 for _k, _vs in SYNONYMS.items():
@@ -147,10 +141,8 @@ def get_alternatives(word: str) -> Set[str]:
     return alts
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. LATTICE CONSTRUCTION
-# ─────────────────────────────────────────────────────────────────────────────
-Lattice = List[Set[str]]   # "" in bin = optional position
+
+Lattice = List[Set[str]]   
 
 def construct_lattice(reference:  List[str],
                       model_hyps: List[List[str]],
@@ -189,7 +181,6 @@ def construct_lattice(reference:  List[str],
 
         lattice.append(bin_set)
 
-    # Optional insertion bins
     all_ins: Dict[int, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
     for aln in alignments:
         pos = 0
@@ -217,9 +208,7 @@ def lattice_str(lattice: Lattice) -> str:
     return " ".join(parts)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 5. LATTICE EDIT DISTANCE DP
-# ─────────────────────────────────────────────────────────────────────────────
+
 def lattice_edit_dist(lattice: Lattice, hyp: List[str]) -> int:
     n, m = len(lattice), len(hyp)
     INF  = 10**9
@@ -235,9 +224,9 @@ def lattice_edit_dist(lattice: Lattice, hyp: List[str]) -> int:
         for j in range(1, m+1):
             hw = hyp[j-1]
             dp[i][j] = min(
-                dp[i-1][j-1] + (0 if hw in b else 1),   # match/sub
-                dp[i-1][j]   + (0 if opt else 1),         # delete
-                dp[i][j-1]   + 1,                          # insert
+                dp[i-1][j-1] + (0 if hw in b else 1),   
+                dp[i-1][j]   + (0 if opt else 1),         
+                dp[i][j-1]   + 1,                          
             )
     return dp[n][m]
 
@@ -250,9 +239,7 @@ def standard_wer(ref: List[str], hyp: List[str]) -> float:
     return edit_distance(ref, hyp)[0] / len(ref)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 6. EVALUATION
-# ─────────────────────────────────────────────────────────────────────────────
+
 def evaluate(examples: List[Dict],
              threshold: float = AGREEMENT_THRESHOLD) -> pd.DataFrame:
     rows = []
@@ -288,19 +275,18 @@ def aggregate(df: pd.DataFrame) -> pd.DataFrame:
     return agg
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 7. EXAMPLES — BUILT FROM REAL DATA (recording 825780)
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 REAL_EXAMPLES = [
     {
         "utterance_id": "825780-seg1",
         "reference": "उनकी जनसंख्या बहुत कम दी जा रही है",
         "models": {
-            "Model-A": "उनकी जनसंख्या बहुत कम दी जा रही है",   # perfect
-            "Model-B": "उनकी जनसंख्या बोहोत कम दी जा रही है",  # dialectal बोहोत
-            "Model-C": "उनकी जनसंख्या बहुत कम दी जा रहि है",   # matra error
-            "Model-D": "उनकी जनसंख्या बहुत कम दी जा रही",       # है deleted
-            "Model-E": "उनकी आबादी बहुत कम दी जा रही है",       # synonym
+            "Model-A": "उनकी जनसंख्या बहुत कम दी जा रही है",   
+            "Model-B": "उनकी जनसंख्या बोहोत कम दी जा रही है",  
+            "Model-C": "उनकी जनसंख्या बहुत कम दी जा रहि है",   
+            "Model-D": "उनकी जनसंख्या बहुत कम दी जा रही",      
+            "Model-E": "उनकी आबादी बहुत कम दी जा रही है",     
         },
     },
     {
@@ -308,10 +294,10 @@ REAL_EXAMPLES = [
         "reference": "हम वहां गया थे कुड़रमा घाटी तरफ",
         "models": {
             "Model-A": "हम वहां गया थे कुड़रमा घाटी तरफ",
-            "Model-B": "हम वहाँ गया थे कुड़रमा घाटी तरफ",       # यहाँ/यहां variant
-            "Model-C": "हम वहां गए थे कुड़रमा घाटी तरफ",        # गया→गए
-            "Model-D": "हम वहां गया था कुड़रमा घाटी तरफ",       # थे→था
-            "Model-E": "हम वहां गया थे कुडरमा घाटी तरफ",        # matra drop
+            "Model-B": "हम वहाँ गया थे कुड़रमा घाटी तरफ",       
+            "Model-C": "हम वहां गए थे कुड़रमा घाटी तरफ",       
+            "Model-D": "हम वहां गया था कुड़रमा घाटी तरफ",      
+            "Model-E": "हम वहां गया थे कुडरमा घाटी तरफ",        
         },
     },
     {
@@ -319,15 +305,15 @@ REAL_EXAMPLES = [
         "reference": "हमने मिस्टेक किए कि हम लाइट नहीं ले गए थे",
         "models": {
             "Model-A": "हमने मिस्टेक किए कि हम लाइट नहीं ले गए थे",
-            "Model-B": "हमने mistake किए कि हम लाइट नहीं ले गए थे",  # Roman
-            "Model-C": "हमने मिस्टेक किया कि हम लाइट नहीं ले गए थे", # किए→किया
-            "Model-D": "हमने मिस्टेक किए कि हम light नहीं ले गए थे",  # Roman
-            "Model-E": "हमने गलती की कि हम लाइट नहीं ले गए थे",       # synonym
+            "Model-B": "हमने mistake किए कि हम लाइट नहीं ले गए थे",  
+            "Model-C": "हमने मिस्टेक किया कि हम लाइट नहीं ले गए थे", 
+            "Model-D": "हमने मिस्टेक किए कि हम light नहीं ले गए थे",  
+            "Model-E": "हमने गलती की कि हम लाइट नहीं ले गए थे",       
         },
     },
     {
         "utterance_id": "825780-seg4",
-        "reference": "उसने चौदह किताबें खरीदीं",  # classic assignment example
+        "reference": "उसने चौदह किताबें खरीदीं",  
         "models": {
             "Model-A": "उसने चौदह किताबें खरीदीं",
             "Model-B": "उसने 14 किताबें खरीदीं",
@@ -341,51 +327,51 @@ REAL_EXAMPLES = [
         "reference": "जब रात की बारी आई तो हमने टेंट गड़ा",
         "models": {
             "Model-A": "जब रात की बारी आई तो हमने टेंट गड़ा",
-            "Model-B": "जब रात की बारी आई तो हमने tent गड़ा",   # Roman
-            "Model-C": "जब रात की बारी आई तो हमने टेंट गाड़ा",  # गड़ा→गाड़ा
-            "Model-D": "जब रात की बारी आई हमने टेंट गड़ा",       # तो deleted
-            "Model-E": "जब रात की बारी आई तो हमने कैम्प लगाया",  # synonym
+            "Model-B": "जब रात की बारी आई तो हमने tent गड़ा",   
+            "Model-C": "जब रात की बारी आई तो हमने टेंट गाड़ा",  
+            "Model-D": "जब रात की बारी आई हमने टेंट गड़ा",      
+            "Model-E": "जब रात की बारी आई तो हमने कैम्प लगाया",  
         },
     },
 ]
 
 PSEUDOCODE = """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║        LATTICE-BASED WER — ALGORITHM PSEUDOCODE  (Q4)                     ║
+║        LATTICE-BASED WER — ALGORITHM PSEUDOCODE  (Q4)                        ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  INPUT:  reference   : List[Word]                                           ║
-║          model_hyps  : List[List[Word]]   # N model outputs                 ║
-║          threshold   : float = 0.6                                          ║
+║  INPUT:  reference   : List[Word]                                            ║
+║          model_hyps  : List[List[Word]]   # N model outputs                  ║
+║          threshold   : float = 0.6                                           ║
 ║                                                                              ║
-║  STEP 1 – ALIGN all models to reference                                     ║
-║    alignments = [edit_distance_alignment(ref, h) for h in model_hyps]       ║
+║  STEP 1 – ALIGN all models to reference                                      ║
+║    alignments = [edit_distance_alignment(ref, h) for h in model_hyps]        ║
 ║                                                                              ║
 ║  STEP 2 – BUILD LATTICE                                                      ║
 ║    for ref_idx, ref_word in enumerate(reference):                            ║
-║        bin = get_alternatives(ref_word)   # nums + spelling + synonyms     ║
+║        bin = get_alternatives(ref_word)   # nums + spelling + synonyms       ║
 ║        sub_votes = count substitutions at ref_idx across models              ║
 ║        for word, votes in sub_votes:                                         ║
 ║            if votes / N >= threshold:                                        ║
-║                bin |= get_alternatives(word)  # model-agreement override    ║
+║                bin |= get_alternatives(word)  # model-agreement override     ║
 ║        lattice.append(bin)                                                   ║
 ║                                                                              ║
 ║  STEP 3 – HANDLE INSERTIONS                                                  ║
 ║    if ≥threshold models insert same word at same position:                   ║
-║        insert optional bin {word, ""} (skippable at cost 0)                 ║
+║        insert optional bin {word, ""} (skippable at cost 0)                  ║
 ║                                                                              ║
-║  STEP 4 – LATTICE-WER (DP)                                                  ║
+║  STEP 4 – LATTICE-WER (DP)                                                   ║
 ║    dist = dp(lattice, hyp):                                                  ║
-║           MATCH  = hyp_word ∈ bin         → cost 0                         ║
-║           SUB    = hyp_word ∉ bin         → cost 1                         ║
-║           DEL    = skip bin               → cost 0 if optional else 1       ║
-║           INS    = extra hyp word         → cost 1                         ║
+║           MATCH  = hyp_word ∈ bin         → cost 0                           ║
+║           SUB    = hyp_word ∉ bin         → cost 1                           ║
+║           DEL    = skip bin               → cost 0 if optional else 1        ║
+║           INS    = extra hyp word         → cost 1                           ║
 ║    ref_len = #non-optional bins                                              ║
 ║    wer = dist / ref_len                                                      ║
 ║                                                                              ║
 ║  KEY DIFFERENCE:                                                             ║
-║    Standard : match iff hyp_word == ref_word   (exact)                      ║
-║    Lattice  : match iff hyp_word ∈ bin         (valid alternatives)         ║
+║    Standard : match iff hyp_word == ref_word   (exact)                       ║
+║    Lattice  : match iff hyp_word ∈ bin         (valid alternatives)          ║
 ║                                                                              ║
 ║  ALIGNMENT UNIT — WORD:                                                      ║
 ║    ✓ Hindi words = space-delimited, natural unit                             ║
@@ -396,9 +382,8 @@ PSEUDOCODE = """
 """
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 8. MAIN
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 def main(examples: Optional[List[Dict]] = None,
          threshold: float = AGREEMENT_THRESHOLD):
 
@@ -407,7 +392,7 @@ def main(examples: Optional[List[Dict]] = None,
     print("=" * 70)
     print(PSEUDOCODE)
 
-    # Try to fetch real segments for context
+
     print(f"\n── Fetching real segments from GCS recording 825780 ──")
     segs = get_real_segments(EXAMPLE_TRANS_URL)
     if segs:
@@ -420,7 +405,7 @@ def main(examples: Optional[List[Dict]] = None,
     if examples is None:
         examples = REAL_EXAMPLES
 
-    # Show lattice for first example
+
     ex0  = examples[0]
     ref0 = ex0["reference"].split()
     lat0 = construct_lattice(ref0, [v.split() for v in ex0["models"].values()], threshold)
@@ -428,7 +413,7 @@ def main(examples: Optional[List[Dict]] = None,
     print(f"  Reference : {ex0['reference']}")
     print(f"  Lattice   : {lattice_str(lat0)}")
 
-    # Evaluate all
+
     df  = evaluate(examples, threshold)
     agg = aggregate(df)
 

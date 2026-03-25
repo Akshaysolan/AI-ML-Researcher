@@ -41,9 +41,9 @@ random.seed(42)
 GCS_BASE          = "https://storage.googleapis.com/upload_goai"
 EXAMPLE_TRANS_URL = f"{GCS_BASE}/967179/825780_transcription.json"
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 1. FETCH REAL DATA FROM GCS
-# ─────────────────────────────────────────────────────────────────────────────
+
+
+
 def fetch_json(url: str) -> Optional[list]:
     try:
         r = requests.get(url, timeout=30); r.raise_for_status(); return r.json()
@@ -65,10 +65,8 @@ def extract_words_from_gcs(url: str) -> List[str]:
     return list(set(words))
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 2. CORE HINDI VOCABULARY
-# ─────────────────────────────────────────────────────────────────────────────
-# Words extracted from real recording 825780 that are correctly spelled:
+
+
 REAL_DATA_WORDS: Set[str] = {
     "अब","काफी","अच्छा","होता","है","क्योंकि","उनकी","जनसंख्या","बहुत","कम",
     "दी","जा","रही","तो","हमें","उनको","देखना","था","एक","मतलब","वो","लेकिन",
@@ -96,30 +94,31 @@ REAL_DATA_WORDS: Set[str] = {
 }
 
 CORE_HINDI: Set[str] = REAL_DATA_WORDS | {
-    # Function words
+   
+   
     "है","हैं","था","थी","थे","हो","हूँ","हुआ","हुई","हुए",
     "और","या","लेकिन","परंतु","किंतु","इसलिए","क्योंकि",
     "के","का","की","को","से","में","पर","तक","ने","द्वारा",
     "यह","वह","ये","वे","मैं","हम","तुम","आप","वो",
     "जो","कि","जब","तब","अगर","तो","नहीं","मत","न",
-    # Common nouns
+   
     "घर","दिन","रात","समय","लोग","मनुष्य","काम","बात",
     "आदमी","औरत","बच्चा","बच्चे","परिवार","माँ","पिता",
     "पानी","खाना","रास्ता","जगह","देश","शहर","गाँव","दुनिया",
-    # Verbs
+    
     "करना","होना","जाना","आना","देना","लेना","कहना",
     "देखना","बोलना","सुनना","पढ़ना","लिखना","सोना","उठना",
     "बैठना","चलना","दौड़ना","खाना","पीना","सोचना","समझना",
-    # Numbers
+   
     "एक","दो","तीन","चार","पाँच","छह","सात","आठ","नौ","दस",
     "बीस","तीस","चालीस","पचास","साठ","सत्तर","अस्सी","नब्बे",
     "सौ","हज़ार","लाख","करोड़",
 }
 
 LOANWORDS: Set[str] = {
-    # From real data recording 825780
+   
     "एरिया","टेंट","कैम्प","प्रोजेक्ट","मिस्टेक","अमेजन","एंटर","कैम्पिंग",
-    # Technology / professional
+   
     "कंप्यूटर","कम्प्यूटर","मोबाइल","इंटरनेट","वेबसाइट","ऐप","सॉफ्टवेयर",
     "हार्डवेयर","ब्राउज़र","सर्वर","डेटा","लैपटॉप","टैबलेट","स्क्रीन",
     "कीबोर्ड","चार्जर","कैमरा","वीडियो","ऑडियो","स्पीकर","माइक्रोफोन",
@@ -134,9 +133,7 @@ LOANWORDS: Set[str] = {
 }
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 3. DICTIONARY LOADER
-# ─────────────────────────────────────────────────────────────────────────────
+
 DEVANAGARI_RE = re.compile(r"^[\u0900-\u097F\u200C\u200D]+$")
 
 def load_dictionary(dict_path: Optional[str] = None) -> Set[str]:
@@ -148,7 +145,7 @@ def load_dictionary(dict_path: Optional[str] = None) -> Set[str]:
                 if w and DEVANAGARI_RE.match(w): word_set.add(w)
         print(f"✓ Loaded {len(word_set):,} words from {dict_path}")
         return word_set
-    # Try IndicNLP
+    
     for url in [
         "https://raw.githubusercontent.com/anoopkunchukuttan/indic_nlp_resources"
         "/master/transliteration/hi_word_list.txt",
@@ -164,9 +161,6 @@ def load_dictionary(dict_path: Optional[str] = None) -> Set[str]:
     return word_set
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 4. MORPHOLOGICAL ANALYSIS
-# ─────────────────────────────────────────────────────────────────────────────
 SUFFIXES = [
     "ाई","ापन","ाहट","ाव","ावट","आई","आव","आहट",
     "ियाँ","ियां","ों","एं","ता","ती","ते",
@@ -182,9 +176,7 @@ def morphological_check(word: str, dictionary: Set[str]) -> bool:
     return False
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 5. CHARACTER TRIGRAM LM
-# ─────────────────────────────────────────────────────────────────────────────
+
 class CharTrigramLM:
     def __init__(self):
         self.ng: Dict[str, Dict[str, int]] = collections.defaultdict(
@@ -212,9 +204,7 @@ class CharTrigramLM:
         return lp / max(n, 1)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 6. STRUCTURAL VALIDATORS
-# ─────────────────────────────────────────────────────────────────────────────
+
 DOUBLE_HALANT   = re.compile(r"(्){2,}")
 DOUBLE_MATRA    = re.compile(r"[ािीुूेैोौ]{2,}")
 INVALID_START   = re.compile(r"^[ािीुूेैोौंःँ]")
@@ -230,9 +220,7 @@ def structural_ok(word: str) -> Tuple[bool, str]:
     return True, ""
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 7. CLASSIFIER
-# ─────────────────────────────────────────────────────────────────────────────
+
 LM_THRESHOLD = -2.2
 
 def classify_word(word: str, dictionary: Set[str], lm: CharTrigramLM) -> Dict:
@@ -277,10 +265,7 @@ def classify_all(words: List[str], dictionary: Set[str], lm: CharTrigramLM) -> p
                          for w in tqdm(words, desc="Classifying")])
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 8. LOW-CONFIDENCE REVIEW (40-50 words)
-# ─────────────────────────────────────────────────────────────────────────────
-# Simulated manual ground-truth for known tricky words
+
 MANUAL_GT = {
     "रामप्रकाश": True,   "मुंबईकर": True,   "आइडियाज़": True,
     "काहे": True,         "देखिए": True,      "लगायेगा": True,
@@ -348,9 +333,7 @@ def review_low_confidence(df: pd.DataFrame, n_review: int = 50) -> Dict:
     return {"accuracy": acc, "n_correct": n_correct, "n_total": n_total}
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 9. UNRELIABLE CATEGORIES
-# ─────────────────────────────────────────────────────────────────────────────
+
 UNRELIABLE = """
 UNRELIABLE WORD CATEGORIES (Q3-d)
 ===================================
@@ -379,9 +362,7 @@ them low scores → system may incorrectly classify as incorrect.
 """
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 10. LOAD WORD LIST FROM GOOGLE SHEET / CSV / GCS
-# ─────────────────────────────────────────────────────────────────────────────
+
 def load_word_list_from_sheet(sheet_url: str) -> List[str]:
     """
     Load word list from Google Sheet.
@@ -442,17 +423,14 @@ def generate_demo_words(dictionary: Set[str]) -> List[str]:
     return words
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 11. EXPORT (Google Sheets compatible)
-# ─────────────────────────────────────────────────────────────────────────────
+
 def export_results(df: pd.DataFrame,
                    out_csv: str = "q3_spelling_results.csv",
                    out_detail: str = "q3_detailed_results.csv"):
-    # Google Sheet-ready: 2 columns only
+   
     sheet_df = df[["word","label"]].rename(columns={"label":"spelling_status"})
-    sheet_df.to_csv(out_csv, index=False, encoding="utf-8-sig")   # BOM for Devanagari
+    sheet_df.to_csv(out_csv, index=False, encoding="utf-8-sig")   
 
-    # Detailed file
     df.to_csv(out_detail, index=False, encoding="utf-8-sig")
 
     n_correct = (df["label"] == "correct spelling").sum()
@@ -473,9 +451,8 @@ def export_results(df: pd.DataFrame,
     return n_correct
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 12. MAIN
-# ─────────────────────────────────────────────────────────────────────────────
+
+
 def main(word_source: Optional[str] = None,
          dict_path:   Optional[str] = None):
 
@@ -483,10 +460,8 @@ def main(word_source: Optional[str] = None,
     print("QUESTION 3: HINDI SPELL CHECKER (with real GCS data)")
     print("=" * 65)
 
-    # Load dictionary
     dictionary = load_dictionary(dict_path)
 
-    # Load word list
     if word_source:
         words = load_word_list(word_source)
         if not words:
@@ -503,23 +478,21 @@ def main(word_source: Optional[str] = None,
         else:
             print(f"  ✓ Got {len(words)} unique words from real recording 825780")
 
-    # Train LM
+
     print(f"\n🔧 Training character trigram LM on {len(dictionary):,} dictionary words...")
     lm = CharTrigramLM()
     lm.train(list(dictionary))
 
-    # Classify
+
     print(f"\n🔍 Classifying {len(words):,} words...")
     df = classify_all(words, dictionary, lm)
 
-    # Export
+
     n_correct = export_results(df)
     print(f"\n  Final answer (Q3-a): {n_correct:,} correctly spelled unique words")
 
-    # Low confidence review
     review_low_confidence(df, n_review=50)
 
-    # Unreliable categories
     print(UNRELIABLE)
 
     print("\n✅ Question 3 complete.")
